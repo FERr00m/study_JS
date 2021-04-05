@@ -1,31 +1,22 @@
 'use strict';
 
-let money,
-    income,
-    addExpenses,
-    deposit,
-    mission,
-    period,
-    budgetDay,
-    budgetMonth,
-    expenses1,
-    expenses2,
-    amount1,
-    amount2;
+let money = +prompt('Ваш месячный доход?'),
+    income = 'Фриланс',
+    addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую'),
+    deposit = confirm('Есть ли у вас депозит в банке?'),
+    mission = 2e5,
+    period = 6,
+    expenses1 = prompt('Введите обязательную статью расходов:'),
+    amount1 = +prompt('Во сколько это обойдется?'),
+    expenses2 = prompt('Введите ещё одну обязательную статью расходов:'),
+    amount2 = +prompt('Во сколько это обойдется?'),
+    budgetMonth = money - amount1 - amount2,
+    budgetDay = Math.round(budgetMonth / 30);
 
-money = +prompt('Ваш месячный доход?');
+
 console.log('money: ', typeof money);
-income = 'Фриланс';
 console.log('income: ', typeof income);
-addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую');
-deposit = confirm('Есть ли у вас депозит в банке?');
 console.log('deposit: ', typeof deposit);
-expenses1 = prompt('Введите обязательную статью расходов:');
-amount1 = +prompt('Во сколько это обойдется?');
-expenses2 = prompt('Введите ещё одну обязательную статью расходов:');
-amount2 = +prompt('Во сколько это обойдется?');
-mission = 2e5;
-period = 6;
 console.log('Период равен', period, 'месяцев');
 console.log('Цель заработать', mission, 'рублей');
 
@@ -33,12 +24,14 @@ addExpenses = addExpenses.toLowerCase();
 addExpenses = addExpenses.split(', ');
 console.log('Результат: ', addExpenses);
 
-budgetMonth = money - amount1 - amount2;
 console.log('Бюджет на месяц', budgetMonth);
 
-console.log('Цель будет достигнута за', Math.round(mission / budgetMonth), 'месяцев(-а)');
+if (budgetMonth === 0) {
+  console.log('Невозможно расчитать период для достижения цели, так как бюджет на месяц равен нулю');
+} else {
+  console.log('Цель будет достигнута за', Math.round(mission / budgetMonth), 'месяцев(-а)');
+}
 
-budgetDay = Math.round(budgetMonth / 30);
 console.log('Бюджет на день', budgetDay);
 
 // Вариант 1
