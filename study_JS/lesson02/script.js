@@ -51,8 +51,6 @@ let salaryAmount = document.querySelector('.salary-amount'),
     placeholdersNomination = document.querySelectorAll('input[placeholder="Наименование"'),
     placeholdersSum = document.querySelectorAll('input[placeholder="Сумма"');
 
-placeholdersNomination = Array.prototype.slice.call(placeholdersNomination); 
-
 let appData = {
     income: {},
     incomeMonth: 0,
@@ -101,7 +99,26 @@ let appData = {
   addExpensesBlock: function() { 
     let cloneExpensesItem = expensesItems[0].cloneNode(true);
     let cloneExpensesItemArr = cloneExpensesItem.children;
-    placeholdersNomination.push(cloneExpensesItemArr[0]);
+    
+    cloneExpensesItemArr[0].addEventListener('input', function() {
+        if (checkLetter(cloneExpensesItemArr[0].value)) {
+          return true;
+        } else {
+          cloneExpensesItemArr[0].value = '';
+          return alert('Выберите русский язык');
+        }
+      });
+
+      cloneExpensesItemArr[1].addEventListener('input', function() {
+      if (isNumber(cloneExpensesItemArr[1].value)) {
+        return true;
+      } else if (cloneExpensesItemArr[1].value === '') {
+        return true;
+      } else {
+        cloneExpensesItemArr[1].value = '';
+        return alert('В поле "Сумма" введите цифры');
+      }
+    });  
     
     for (let item of cloneExpensesItemArr) {
       item.value = '';
@@ -116,6 +133,26 @@ let appData = {
   addIncomeBlock: function() {
     let cloneIncomeItem = incomeItems[0].cloneNode(true);
     let cloneIncomeItemArr = cloneIncomeItem.children;
+
+    cloneIncomeItemArr[0].addEventListener('input', function() {
+      if (checkLetter(cloneIncomeItemArr[0].value)) {
+        return true;
+      } else {
+        cloneIncomeItemArr[0].value = '';
+        return alert('Выберите русский язык');
+      }
+    });
+
+    cloneIncomeItemArr[1].addEventListener('input', function() {
+      if (isNumber(cloneIncomeItemArr[1].value)) {
+        return true;
+      } else if (cloneIncomeItemArr[1].value === '') {
+        return true;
+      } else {
+        cloneIncomeItemArr[1].value = '';
+        return alert('В поле "Сумма" введите цифры');
+      }
+    });
 
     for (let item of cloneIncomeItemArr) {
       item.value = '';
@@ -273,7 +310,7 @@ placeholdersSum.forEach(function(item) {
       return true;
     } else {
       item.value = '';
-      return alert('Введите цифры');
+      return alert('В поле "Сумма" введите цифры');
     }
   });
 });
