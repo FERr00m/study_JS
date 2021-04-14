@@ -194,8 +194,6 @@ let appData = {
   }
 };
 
-
-
 buttonCount.addEventListener('click', function() {
   if (salaryAmount.value === '') {
     buttonCount.disabled = true; 
