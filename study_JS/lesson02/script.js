@@ -68,10 +68,10 @@ let appData = {
     expensesMonth: 0,
 
   start: function() {
-    if (appData.getExpenses()) {
+    if (appData.getExpenses() && appData.getIncome()) {
       appData.budget = +salaryAmount.value;
       
-      appData.getIncome();
+      
       appData.getExpensesMonth();
       appData.getAddExpenses();
       appData.getAddIncome();
@@ -80,7 +80,7 @@ let appData = {
 
       appData.showResult();
     } else {
-      alert('Ошибка в поле "Обязательный расход"');
+      alert('Ошибка в поле "Обязательный расход" или в поле "Дополнительный доход"');
     }
     
   },
@@ -185,22 +185,24 @@ let appData = {
   },
 
   getIncome: function() {
+    let flag = true;
     incomeItems.forEach(function(item) {
       let itemIncomes = item.querySelector('.income-title').value;
       let cashIncomes = item.querySelector('.income-amount').value;
-      if (itemIncomes.length > 1 || cashIncomes.length > 1) {
+      if (itemIncomes.length >= 1 || cashIncomes.length >= 1) {
         if(!isString(itemIncomes) && isNumber(cashIncomes)) {
           appData.income[itemIncomes] = +cashIncomes;
+          flag = true;
         } else {
-            alert('Ошибка в поле "Дополнительный доход"');
-          return;
+          flag = false; 
         }
       }
-      
     });
+    
     for (let key in appData.income) {
       appData.incomeMonth += +appData.income[key];
     }
+    return flag;
   },
 
   getAddExpenses: function() {
