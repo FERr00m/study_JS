@@ -70,8 +70,6 @@ let appData = {
   start: function() {
     if (appData.getExpenses() && appData.getIncome()) {
       appData.budget = +salaryAmount.value;
-      
-      
       appData.getExpensesMonth();
       appData.getAddExpenses();
       appData.getAddIncome();
@@ -189,18 +187,29 @@ let appData = {
     incomeItems.forEach(function(item) {
       let itemIncomes = item.querySelector('.income-title').value;
       let cashIncomes = item.querySelector('.income-amount').value;
+      
       if (itemIncomes.length >= 1 || cashIncomes.length >= 1) {
+        if (itemIncomes.length >= 1 && cashIncomes === '') {
+          console.log('dsdf');
+          flag = false;
+          return false;
+        }
+        console.log(cashIncomes);
+        console.log(typeof cashIncomes);
         if(!isString(itemIncomes) && isNumber(cashIncomes)) {
           appData.income[itemIncomes] = +cashIncomes;
+          console.log("Я здесь первый иф");
           flag = true;
         } else {
           flag = false; 
+          return false;
         }
       }
     });
     
     for (let key in appData.income) {
       appData.incomeMonth += +appData.income[key];
+
     }
     return flag;
   },
