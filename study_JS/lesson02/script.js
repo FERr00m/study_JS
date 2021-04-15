@@ -9,7 +9,7 @@ function isString(str) {
 }
 
 const ruAlphabet = 'абвгдежзийклмнопрстуфхцчшщъыьэюя',
-      symbols = '1234567890 .,?"!\'-';
+      symbols = ' .,?"!\'-';
       
 //Функция проверки на ввод русских букв и знаков препинаний
 function checkLetter(str) {
@@ -25,6 +25,7 @@ function checkLetter(str) {
 }
 
 let buttonCount = document.getElementById('start'),
+    buttonsPlus = document.querySelectorAll('.btn_plus'),
     buttonPlusIncome = document.getElementsByTagName('button')[0],
     buttonPlusExpenses = document.getElementsByTagName('button')[1],
     checkBoxDeposit = document.querySelector('#deposit-check'),
@@ -42,6 +43,7 @@ let salaryAmount = document.querySelector('.salary-amount'),
     incomeAmount = document.querySelector('input[class="income-amount"]'),
     additionalIncomeItem = document.querySelectorAll('.additional_income-item'),
     expensesTitle = document.querySelector('input[class="expenses-title"]'),
+    expensesAmount = document.querySelector('.expenses-amount'),
     expensesItems = document.querySelectorAll('.expenses-items'),
     additionalExpensesItem = document.querySelector('.additional_expenses-item'),
     targetAmount = document.querySelector('.target-amount'),
@@ -66,18 +68,18 @@ let appData = {
     expensesMonth: 0,
 
   start: function() {
-    if (appData.getExpenses()) {
-    appData.budget = +salaryAmount.value;
-    
-    appData.getIncome();
-    appData.getExpensesMonth();
-    appData.getAddExpenses();
-    appData.getAddIncome();
-    appData.getBudget();
-    appData.getInfoDeposit(); 
+    if (appData.getExpenses() && appData.getIncome()) {
+      appData.budget = +salaryAmount.value;
+      appData.getExpensesMonth();
+      appData.getAddExpenses();
+      appData.getAddIncome();
+      appData.getBudget();
+      appData.getInfoDeposit(); 
 
-    appData.showResult();
-    } 
+      appData.showResult();
+    } else {
+      alert('Ошибка в поле "Обязательный расход" или в поле "Дополнительный доход"');
+    }
     
   },
 
@@ -105,11 +107,11 @@ let appData = {
           return true;
         } else {
           cloneExpensesItemArr[0].value = '';
-          return alert('Выберите русский язык');
+          return alert('Допустимые значения: буквы русского алфавита и знаки препинания');
         }
       });
-
-      cloneExpensesItemArr[1].addEventListener('input', function() {
+      
+    cloneExpensesItemArr[1].addEventListener('input', function() {
       if (isNumber(cloneExpensesItemArr[1].value)) {
         return true;
       } else if (cloneExpensesItemArr[1].value === '') {
@@ -139,7 +141,7 @@ let appData = {
         return true;
       } else {
         cloneIncomeItemArr[0].value = '';
-        return alert('Выберите русский язык');
+        return alert('Допустимые значения: буквы русского алфавита и знаки препинания');
       }
     });
 
@@ -174,31 +176,42 @@ let appData = {
         appData.expenses[itemExpenses] = cashExpenses;
         flag = true;
       } else {
-          alert('Ошибка в поле "Обязательный расход"');
         flag = false;
       }
-    
     });
     return flag;
   },
 
   getIncome: function() {
+    let flag = true;
     incomeItems.forEach(function(item) {
       let itemIncomes = item.querySelector('.income-title').value;
       let cashIncomes = item.querySelector('.income-amount').value;
-      if (itemIncomes.length > 1 || cashIncomes.length > 1) {
+      
+      if (itemIncomes.length >= 1 || cashIncomes.length >= 1) {
+        if (itemIncomes.length >= 1 && cashIncomes === '') {
+          console.log('dsdf');
+          flag = false;
+          return false;
+        }
+        console.log(cashIncomes);
+        console.log(typeof cashIncomes);
         if(!isString(itemIncomes) && isNumber(cashIncomes)) {
           appData.income[itemIncomes] = +cashIncomes;
+          console.log("Я здесь первый иф");
+          flag = true;
         } else {
-            alert('Ошибка в поле "Дополнительный доход"');
-          return;
+          flag = false; 
+          return false;
         }
       }
-      
     });
+    
     for (let key in appData.income) {
       appData.incomeMonth += +appData.income[key];
+
     }
+    return flag;
   },
 
   getAddExpenses: function() {
@@ -274,6 +287,10 @@ let appData = {
 
 buttonCount.disabled = true;
 
+buttonsPlus.forEach(function(item) {
+  item.disabled = false;
+});
+
 salaryAmount.addEventListener('input', function() {
   if (salaryAmount.value.length >= 1) {
     buttonCount.disabled = false;
@@ -297,10 +314,11 @@ placeholdersNomination.forEach(function(item) {
       return true;
     } else {
       item.value = '';
-      return alert('Выберите русский язык');
+      return alert('Допустимые значения: буквы русского алфавита и знаки препинания');
     }
   });
 });
+
 
 placeholdersSum.forEach(function(item) {
   item.addEventListener('input', function() {
