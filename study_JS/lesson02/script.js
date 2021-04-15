@@ -174,7 +174,7 @@ let appData = {
     expensesItems.forEach(function(item) {
       let itemExpenses = item.querySelector('.expenses-title').value;
       let cashExpenses = item.querySelector('.expenses-amount').value;
-      if(!isString(itemExpenses) || isNumber(cashExpenses)) {
+      if(!isString(itemExpenses) && isNumber(cashExpenses)) {
         appData.expenses[itemExpenses] = cashExpenses;
         flag = true;
       } else {
