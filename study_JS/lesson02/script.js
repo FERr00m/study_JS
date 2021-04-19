@@ -55,7 +55,7 @@ const salaryAmount = document.querySelector('.salary-amount'),
 let expensesItems = document.querySelectorAll('.expenses-items'),
     incomeItems = document.querySelectorAll('.income-items'),
     inputsText = document.querySelectorAll('input[type="text"]');
-inputsText = Array.prototype.slice.call(inputsText);
+inputsText = Array.from(inputsText);
 const newArr = inputsText.slice(0, 11);
 
 class AppData {
@@ -256,7 +256,6 @@ class AppData {
       item.disabled = true;
     });
     checkBoxDeposit.disabled = true;
-    periodSelect.disabled = true;
     buttonReset.addEventListener('click', () => {
       this.reset();
     });
@@ -275,7 +274,7 @@ class AppData {
     this.budgetMonth = 0;
     this.expensesMonth = 0;
     let inputsText = document.querySelectorAll('input[type="text"]');
-    inputsText = Array.prototype.slice.call(inputsText);
+    inputsText = Array.from(inputsText);
     inputsText.forEach((item) => {
       item.value = '';
     });
@@ -289,12 +288,11 @@ class AppData {
       item.disabled = false;
     });
     checkBoxDeposit.disabled = false;
-    periodSelect.disabled = false;
     periodSelect.value = 1;
     periodAmount.textContent = periodSelect.value;
     
     let newExpensesArr = document.querySelectorAll('.expenses-items');
-    newExpensesArr = Array.prototype.slice.call(newExpensesArr);
+    newExpensesArr = Array.from(newExpensesArr);
 
     if (newExpensesArr.length === 3) {
       newExpensesArr[1].remove();
@@ -306,7 +304,7 @@ class AppData {
     buttonPlusExpenses.style = "display: block";
 
     let newIncomeArr = document.querySelectorAll('.income-items');
-    newIncomeArr = Array.prototype.slice.call(newIncomeArr);
+    newIncomeArr = Array.from(newIncomeArr);
 
     if (newIncomeArr.length === 3) {
       newIncomeArr[1].remove();
