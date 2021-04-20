@@ -50,7 +50,10 @@ const salaryAmount = document.querySelector('.salary-amount'),
       periodSelect = document.querySelector('.period-select'),
       periodAmount = document.querySelector('.period-amount'),
       placeholdersNomination = document.querySelectorAll('input[placeholder="Наименование"'),
-      placeholdersSum = document.querySelectorAll('input[placeholder="Сумма"');
+      placeholdersSum = document.querySelectorAll('input[placeholder="Сумма"'),
+      depositBank = document.querySelector('.deposit-bank'),
+      depositAmount = document.querySelector('.deposit-amount'),
+      depositPercent = document.querySelector('.deposit-percent');
     
 let expensesItems = document.querySelectorAll('.expenses-items'),
     incomeItems = document.querySelectorAll('.income-items'),
@@ -94,8 +97,8 @@ class AppData {
     this.getExpInc();
     this.getExpensesMonth();
     this.getAddExpInc();
-    this.getBudget();
     this.getInfoDeposit();
+    this.getBudget();
 
     this.showResult();
     this.blocked();
@@ -105,7 +108,7 @@ class AppData {
     const cloneExpIncItem = str[0].cloneNode(true);
     const cloneExpIncItemArr = cloneExpIncItem.children;
 
-    cloneExpIncItemArr[0].addEventListener('input', () =>{
+    cloneExpIncItemArr[0].addEventListener('input', () => {
       if (checkLetter(cloneExpIncItemArr[0].value)) {
         return true;
       } else {
@@ -185,8 +188,9 @@ class AppData {
   }
 
   getBudget() {
-    this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth;
-    this.budgetDay = Math.round(this.budgetMonth / 30);
+    const monthDeposit = this.moneyDeposit * (this.percentDeposit / 100);
+    this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth + monthDeposit;
+    this.budgetDay = Math.floor(this.budgetMonth / 30);
   }
 
   getTargetMonth() {
@@ -208,20 +212,12 @@ class AppData {
       return ('Что то пошло не так');
     }
   }
-
+  
   getInfoDeposit() {
     if (this.deposit) {
-      this.percentDeposit = prompt('Какой годовой процент?', '10');
-      while (!isNumber(this.percentDeposit)) {
-        this.percentDeposit = prompt('Какой годовой процент?', '10');
-      }
-      this.percentDeposit = +this.percentDeposit;
-      this.moneyDeposit = prompt('Какая сумма заложена?', 10000);
-      while (!isNumber(this.moneyDeposit)) {
-        this.moneyDeposit = prompt('Какая сумма заложена?', 10000);
-      }
-      this.moneyDeposit = +this.moneyDeposit;
-    }
+      this.percentDeposit = depositPercent.value;
+      this.moneyDeposit = depositAmount.value;
+    } 
   }
 
   calcSavedMoney() {
@@ -242,6 +238,7 @@ class AppData {
     buttonReset.addEventListener('click', () => {
       this.reset();
     });
+    depositBank.disabled = true;
   }
 
   reset() {
@@ -302,8 +299,44 @@ class AppData {
     }
 
     buttonPlusIncome.style = "display: block";
+    depositBank.disabled = false;
+    depositBank.value = '';
+    depositPercent.style.display = 'none';
+    checkBoxDeposit.checked = false;
+    this.depositHandler();
   }
-  
+
+  changePercent() {
+    const valueSelect = this.value;
+    
+    if (valueSelect === 'other') {
+      depositPercent.style.display = 'inline-block';
+      depositPercent.addEventListener('input', () => {
+        buttonCount.disabled = false;
+      }); 
+
+    } else {
+      depositPercent.style.display = 'none';
+      depositPercent.value = valueSelect;
+    }
+  }
+
+  depositHandler() {
+    if (checkBoxDeposit.checked) {
+      depositBank.style.display = 'inline-block';
+      depositAmount.style.display = 'inline-block';
+      this.deposit = true;
+      depositBank.addEventListener('change', this.changePercent);
+    } else {
+      depositBank.style.display = 'none';
+      depositAmount.style.display = 'none';
+      depositBank.value = '';
+      depositAmount.value = '';
+      this.deposit = false;
+      depositBank.removeEventListener('change', this.changePercent);
+    }
+  }
+
   eventsListeners() {
     buttonCount.disabled = true;
     buttonsPlus.forEach((item) => {
@@ -317,8 +350,18 @@ class AppData {
       }
     });
     
-    buttonCount.addEventListener('click', () =>{
-      this.start();
+    buttonCount.addEventListener('click', () => {
+      if (!this.deposit) {
+        this.start();
+      } else {
+        if (+depositPercent.value < 0 || +depositPercent.value > 100 || isNaN(+depositPercent.value)) {
+          alert('Введите корректное значение в поле проценты от 0 до 100');
+          buttonCount.disabled = true;
+        } else {
+          buttonCount.disabled = false;
+          this.start();
+        }
+      }
     });
     
     buttonPlusExpenses.addEventListener('click', () => {
@@ -356,6 +399,8 @@ class AppData {
         }
       });
     });
+
+    checkBoxDeposit.addEventListener('change', this.depositHandler.bind(this));
   }
 }
 
