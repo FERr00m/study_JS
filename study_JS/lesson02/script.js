@@ -484,11 +484,15 @@ class AppData {
     let flag = true;
     let dataLocalStorage = this.getLocalStorageRightSide();
     if (cookie) {
-      Object.keys(dataLocalStorage).forEach(item => {
-        if (cookie.indexOf(item) === -1) {
-          flag = false
+      cookie = document.cookie.split('; ');
+      let objCookie = {};
+      cookie.forEach(item => {
+        objCookie[item.split('=')[0]] = '';
+      });
+      delete objCookie['isLoad'];
+      if (Object.keys(dataLocalStorage).length !== Object.keys(objCookie).length) {
+        flag = false;
       }
-    })
     }
     
     return flag
